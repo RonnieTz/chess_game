@@ -1,2 +1,4 @@
-console.log('Hello, world!');
-export {};
+import { renderBoard } from './renderBoard.js';
+import { movePieceEvents } from './movePieces.js';
+renderBoard();
+movePieceEvents();
