@@ -64,6 +64,34 @@ board.addEventListener('click', (e) => {
         if (clickedPieceElement) {
           clickedPieceElement.remove();
         }
+        if (
+          game.selectedPiece.piece.includes('pawn') &&
+          !clickedPieceColor &&
+          game.selectedPiece.left !== clickedLeft
+        ) {
+          document
+            .getElementById(
+              'piece-' + game.selectedPiece.top + '-' + clickedLeft
+            )
+            ?.remove();
+          document.getElementById(
+            game.selectedPiece.top + '-' + clickedLeft
+          )!.title = '';
+          game.removePiece(game.selectedPiece.top, clickedLeft);
+        }
+        if (
+          game.selectedPiece.piece.includes('pawn') &&
+          (clickedTop === 0 || clickedTop === 7)
+        ) {
+          console.log('promote');
+          selectedPieceElement.setAttribute(
+            'src',
+            `/assets/${game.selectedPiece.piece.split('_')[0]}_queen.svg`
+          );
+          clickedElement.title =
+            game.selectedPiece.piece.split('_')[0] + '_queen';
+          game.promotePawn(clickedTop, clickedLeft);
+        }
         game.nextTurn();
       }
       selectedCellElement.classList.remove('selected');

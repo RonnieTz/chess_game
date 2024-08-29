@@ -68,6 +68,5 @@ export const getLegalMoves = (history, { top, left }) => {
             }
         }
     }
-    console.log(previousBoard);
     return legalMoves;
 };

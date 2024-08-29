@@ -9,7 +9,7 @@ export class Game {
         { top: 0, left: 1 },
     ];
     constructor(board) {
-        this.board = Array(8).fill(Array(8).fill({ piece: undefined }));
+        this.board = Array(8).fill(Array(8).fill({ piece: undefined, pieceMoved: false, color: '' }));
         this.board = this.board.map((row, i) => {
             return row.map((_cell, j) => {
                 const piece = initialPositions.find(({ top, left }) => top === i && left === j);
@@ -49,6 +49,19 @@ export class Game {
     }
     removeSelection() {
         this.selectedPiece = undefined;
+    }
+    removePiece(top, left) {
+        this.board[top][left].piece = undefined;
+        this.board[top][left].color = '';
+    }
+    promotePawn(top, left) {
+        const piece = this.board[top][left].piece;
+        if (piece === 'white_pawn' && top === 0) {
+            this.board[top][left].piece = 'white_queen';
+        }
+        if (piece === 'black_pawn' && top === 7) {
+            this.board[top][left].piece = 'black_queen';
+        }
     }
     movePiece(selectedTop, selectedLeft, targetTop, targetLeft) {
         const selectedPieceName = this.board[selectedTop][selectedLeft].piece;

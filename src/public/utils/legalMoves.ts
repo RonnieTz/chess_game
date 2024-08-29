@@ -90,7 +90,6 @@ export const getLegalMoves = (
       }
     }
   }
-  console.log(previousBoard);
 
   return legalMoves;
 };
