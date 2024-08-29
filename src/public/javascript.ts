@@ -1,7 +1,9 @@
 import { Game } from './utils/Game.js';
+import { getLegalMoves } from './utils/legalMoves.js';
 const board = document.querySelector('.app') as HTMLElement;
 
-const game = new Game(board);
+export const game = new Game(board);
+getLegalMoves(game.history, { top: 6, left: 6 });
 
 board.addEventListener('click', (e) => {
   const clickedElement = e.target as HTMLElement;
@@ -23,6 +25,10 @@ board.addEventListener('click', (e) => {
     if (clickedPieceColor === game.turn) {
       //If the clicked piece is the same color as the current turn, select it
       game.selectPiece(clickedPieceName, clickedTop, clickedLeft);
+      game.legalMoves = getLegalMoves(game.history, {
+        top: clickedTop,
+        left: clickedLeft,
+      });
       clickedElement.classList.add('selected');
       game.legalMoves.forEach(({ top, left }) => {
         const cellElement = document.getElementById(`${top}-${left}`)!;

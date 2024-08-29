@@ -1,6 +1,7 @@
 import { initialPositions } from './initialPositions.js';
 export class Game {
     board;
+    history = [];
     selectedPiece;
     turn = 'white';
     legalMoves = [
@@ -11,11 +12,15 @@ export class Game {
         this.board = Array(8).fill(Array(8).fill({ piece: undefined }));
         this.board = this.board.map((row, i) => {
             return row.map((_cell, j) => {
+                const piece = initialPositions.find(({ top, left }) => top === i && left === j);
                 return {
-                    piece: initialPositions.find(({ top, left }) => top === i && left === j)?.name,
+                    piece: piece?.name,
+                    pieceMoved: false,
+                    color: piece?.name?.split('_')[0],
                 };
             });
         });
+        this.history.push(this.board);
         this.board.forEach((row, i) => {
             const rowElement = document.createElement('div');
             rowElement.classList.add('row');
@@ -48,7 +53,11 @@ export class Game {
     movePiece(selectedTop, selectedLeft, targetTop, targetLeft) {
         const selectedPieceName = this.board[selectedTop][selectedLeft].piece;
         this.board[selectedTop][selectedLeft].piece = undefined;
+        this.board[selectedTop][selectedLeft].pieceMoved = true;
         this.board[targetTop][targetLeft].piece = selectedPieceName;
+        this.board[targetTop][targetLeft].color = this.turn;
+        this.board[targetTop][targetLeft].pieceMoved = true;
+        this.history.push(JSON.parse(JSON.stringify(this.board)));
     }
     nextTurn() {
         this.turn = this.turn === 'white' ? 'black' : 'white';
