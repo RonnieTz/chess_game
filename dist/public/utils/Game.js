@@ -1,47 +1,13 @@
-const initialPositions = [
-    { name: 'black_rook', top: 0, left: 0 },
-    { name: 'black_knight', top: 0, left: 1 },
-    { name: 'black_bishop', top: 0, left: 2 },
-    { name: 'black_queen', top: 0, left: 3 },
-    { name: 'black_king', top: 0, left: 4 },
-    { name: 'black_bishop', top: 0, left: 5 },
-    { name: 'black_knight', top: 0, left: 6 },
-    { name: 'black_rook', top: 0, left: 7 },
-    { name: 'black_pawn', top: 1, left: 0 },
-    { name: 'black_pawn', top: 1, left: 1 },
-    { name: 'black_pawn', top: 1, left: 2 },
-    { name: 'black_pawn', top: 1, left: 3 },
-    { name: 'black_pawn', top: 1, left: 4 },
-    { name: 'black_pawn', top: 1, left: 5 },
-    { name: 'black_pawn', top: 1, left: 6 },
-    { name: 'black_pawn', top: 1, left: 7 },
-    { name: 'white_pawn', top: 6, left: 0 },
-    { name: 'white_pawn', top: 6, left: 1 },
-    { name: 'white_pawn', top: 6, left: 2 },
-    { name: 'white_pawn', top: 6, left: 3 },
-    { name: 'white_pawn', top: 6, left: 4 },
-    { name: 'white_pawn', top: 6, left: 5 },
-    { name: 'white_pawn', top: 6, left: 6 },
-    { name: 'white_pawn', top: 6, left: 7 },
-    { name: 'white_rook', top: 7, left: 0 },
-    { name: 'white_knight', top: 7, left: 1 },
-    { name: 'white_bishop', top: 7, left: 2 },
-    { name: 'white_queen', top: 7, left: 3 },
-    { name: 'white_king', top: 7, left: 4 },
-    { name: 'white_bishop', top: 7, left: 5 },
-    { name: 'white_knight', top: 7, left: 6 },
-    { name: 'white_rook', top: 7, left: 7 },
-];
-class Game {
+import { initialPositions } from './initialPositions.js';
+export class Game {
     board;
-    pieces;
     selectedPiece;
     turn = 'white';
     legalMoves = [
         { top: 0, left: 0 },
         { top: 0, left: 1 },
     ];
-    constructor() {
+    constructor(board) {
         this.board = Array(8).fill(Array(8).fill({ piece: undefined }));
         this.board = this.board.map((row, i) => {
             return row.map((_cell, j) => {
@@ -50,16 +16,41 @@ class Game {
                 };
             });
         });
-        this.pieces = initialPositions;
+        this.board.forEach((row, i) => {
+            const rowElement = document.createElement('div');
+            rowElement.classList.add('row');
+            row.forEach((cell, j) => {
+                const cellElement = document.createElement('div');
+                cellElement.classList.add('cell');
+                cellElement.classList.add((i + j) % 2 === 0 ? 'cell-light' : 'cell-dark');
+                cellElement.id = `${i}-${j}`;
+                cellElement.title = cell.piece || '';
+                rowElement.appendChild(cellElement);
+                if (cell.piece) {
+                    const pieceElement = document.createElement('img');
+                    pieceElement.src = `/assets/${cell.piece}.svg`;
+                    pieceElement.style.top = `${i * 12.5}%`;
+                    pieceElement.style.left = `${j * 12.5}%`;
+                    pieceElement.classList.add('piece');
+                    pieceElement.id = `piece-${i}-${j}`;
+                    board.appendChild(pieceElement);
+                }
+            });
+            board.appendChild(rowElement);
+        });
     }
-    selectPiece(name, top, left) {
-        this.selectedPiece = { name, top, left };
+    selectPiece(piece, top, left) {
+        this.selectedPiece = { piece, top, left };
     }
     removeSelection() {
         this.selectedPiece = undefined;
+    }
+    movePiece(selectedTop, selectedLeft, targetTop, targetLeft) {
+        const selectedPieceName = this.board[selectedTop][selectedLeft].piece;
+        this.board[selectedTop][selectedLeft].piece = undefined;
+        this.board[targetTop][targetLeft].piece = selectedPieceName;
     }
     nextTurn() {
         this.turn = this.turn === 'white' ? 'black' : 'white';
     }
 }
-export const game = new Game();
