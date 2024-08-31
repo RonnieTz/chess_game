@@ -67,7 +67,7 @@ body {
   height: 12.5%;
   top: 0;
   left: 0;
-  transition: all 0.2s;
+  transition: all 1s cubic-bezier(0.9, -0.3, 0.37, 1.2);
   pointer-events: none;
   z-index: 100;
 }
@@ -83,4 +83,9 @@ body {
 
 .legal-move {
   box-shadow: 0 0 30px 1px rgb(0, 0, 255) inset;
+}
+
+.legal-move:hover {
+  box-shadow: 0 0 30px 1px rgb(0, 0, 255) inset;
+  filter: brightness(0.8);
 }
