@@ -1,11 +1,22 @@
 import { Game } from './utils/Game.js';
 import { getLegalMoves } from './utils/legalMoves.js';
 import { renderBoard } from './utils/renderBoard.js';
+import { kingIsInCheck } from './utils/kingIsInCheck.js';
+import { isCheckmate } from './utils/checkmate.js';
 const board = document.querySelector('.app') as HTMLElement;
+const resetButton = document.querySelector('.reset') as HTMLElement;
+const rotateButton = document.querySelector('.rotate') as HTMLElement;
+const backButton = document.querySelector('.back') as HTMLElement;
+const nextButton = document.querySelector('.next') as HTMLElement;
+const turnElement = document.querySelector('.turn') as HTMLElement;
+const checkElement = document.querySelector('.check') as HTMLElement;
 
 export const game = new Game();
-renderBoard(board);
+renderBoard(board, game.board);
 getLegalMoves(game.history, { top: 6, left: 6 });
+let backButtonDisabled = true;
+let nextButtonDisabled = true;
+let navigationIndex = 0;
 
 board.addEventListener('click', (e) => {
   const clickedElement = e.target as HTMLElement;
@@ -24,6 +35,9 @@ board.addEventListener('click', (e) => {
   )!;
 
   if (!game.selectedPiece) {
+    if (navigationIndex !== game.history.length - 1) {
+      return;
+    }
     if (clickedPieceColor === game.turn) {
       //If the clicked piece is the same color as the current turn, select it
       game.selectPiece(clickedPieceName, clickedTop, clickedLeft);
@@ -137,13 +151,104 @@ board.addEventListener('click', (e) => {
           }
         }
 
+        backButton.classList.remove('disabled');
+        backButtonDisabled = false;
+        navigationIndex = game.history.length;
+
+        setTimeout(() => {
+          turnElement.textContent =
+            game.turn === 'white' ? 'White Playing' : 'Black Playing';
+        }, 650);
         game.movePiece(
           game.selectedPiece.top,
           game.selectedPiece.left,
           clickedTop,
           clickedLeft
         );
+        const isKingInCheck = kingIsInCheck(game, game.turn);
+        let opponentKingElementCell: HTMLElement;
+        let kingElementCell: HTMLElement;
+
+        game.board.forEach((row, i) => {
+          row.forEach((cell, j) => {
+            if (cell.piece === `${game.turn}_king`) {
+              opponentKingElementCell = document.getElementById(
+                `piece-${i}-${j}`
+              )!;
+            }
+            if (
+              cell.piece === `${game.turn === 'white' ? 'black' : 'white'}_king`
+            ) {
+              kingElementCell = document.getElementById(`piece-${i}-${j}`)!;
+            }
+          });
+        });
+
+        setTimeout(() => {
+          if (isKingInCheck) {
+            checkElement.style.display = 'block';
+          } else {
+            checkElement.style.display = 'none';
+          }
+        }, 650);
+        kingElementCell!.classList.remove('in-check');
+        if (isKingInCheck) {
+          opponentKingElementCell!.classList.add('in-check');
+        }
+        const checkmate = isCheckmate(game, game.turn);
+        console.log(checkmate);
       }
+    }
+  }
+});
+
+rotateButton.addEventListener('click', () => {
+  board.classList.toggle('rotated');
+  game.board.forEach((row, top) => {
+    row.forEach((cell, left) => {
+      const pieceElement = document.getElementById(`piece-${top}-${left}`);
+      if (pieceElement) {
+        pieceElement.classList.toggle('rotated');
+      }
+    });
+  });
+});
+resetButton.addEventListener('click', () => {
+  game.resetGame();
+  board.textContent = '';
+  board.classList.remove('rotated');
+  renderBoard(board, game.board);
+  backButton.classList.add('disabled');
+  navigationIndex = 0;
+  nextButton.classList.add('disabled');
+});
+
+backButton.addEventListener('click', () => {
+  if (!backButtonDisabled && navigationIndex > 0) {
+    navigationIndex--;
+    board.textContent = '';
+    renderBoard(board, game.history[navigationIndex]);
+    nextButton.classList.remove('disabled');
+    nextButtonDisabled = false;
+
+    if (navigationIndex === 0) {
+      backButton.classList.add('disabled');
+      backButtonDisabled = true;
+    }
+  }
+});
+
+nextButton.addEventListener('click', () => {
+  if (!nextButtonDisabled && navigationIndex < game.history.length - 1) {
+    navigationIndex++;
+    board.textContent = '';
+    renderBoard(board, game.history[navigationIndex]);
+    backButton.classList.remove('disabled');
+    backButtonDisabled = false;
+
+    if (navigationIndex === game.history.length - 1) {
+      nextButton.classList.add('disabled');
+      nextButtonDisabled = true;
     }
   }
 });

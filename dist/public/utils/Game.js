@@ -21,13 +21,12 @@ export class Game {
                 };
             });
         });
-        this.history.push(this.board);
+        this.history.push(JSON.parse(JSON.stringify(this.board)));
         const rowElement = document.createElement('div');
         rowElement.classList.add('row');
     }
     selectPiece(piece, top, left) {
         this.selectedPiece = { piece, top, left };
-        // this.legalMoves = getLegalMoves(this.history, { top, left });
     }
     calculateLegalMoves(top, left) {
         this.legalMoves = getLegalMoves(this.history, { top, left });
@@ -156,5 +155,23 @@ export class Game {
         this.turn = game.turn;
         this.legalMoves = game.legalMoves;
         this.selectedPiece = game.selectedPiece;
+    }
+    resetGame() {
+        this.board = Array(8).fill(Array(8).fill({ piece: '', pieceMoved: false, color: '' }));
+        this.board = this.board.map((row, i) => {
+            return row.map((_cell, j) => {
+                const piece = initialPositions.find(({ top, left }) => top === i && left === j);
+                return {
+                    piece: piece?.name || '',
+                    pieceMoved: false,
+                    color: piece?.name?.split('_')[0] || '',
+                };
+            });
+        });
+        this.history = [];
+        this.history.push(JSON.parse(JSON.stringify(this.board)));
+        this.turn = 'white';
+        this.legalMoves = [];
+        this.selectedPiece = undefined;
     }
 }

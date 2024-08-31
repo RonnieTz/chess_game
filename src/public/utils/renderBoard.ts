@@ -1,7 +1,10 @@
 import { game } from '../javascript.js';
 
-export const renderBoard = (board: HTMLElement) => {
-  game.board.forEach((row, i) => {
+export const renderBoard = (
+  boardElement: HTMLElement,
+  board: typeof game.board
+) => {
+  board.forEach((row, i) => {
     const rowElement = document.createElement('div');
     rowElement.classList.add('row');
     row.forEach((cell, j) => {
@@ -18,9 +21,9 @@ export const renderBoard = (board: HTMLElement) => {
         pieceElement.style.left = `${j * 12.5}%`;
         pieceElement.classList.add('piece');
         pieceElement.id = `piece-${i}-${j}`;
-        board.appendChild(pieceElement);
+        boardElement.appendChild(pieceElement);
       }
     });
-    board.appendChild(rowElement);
+    boardElement.appendChild(rowElement);
   });
 };

@@ -1,6 +1,5 @@
-import { game } from '../javascript.js';
-export const renderBoard = (board) => {
-    game.board.forEach((row, i) => {
+export const renderBoard = (boardElement, board) => {
+    board.forEach((row, i) => {
         const rowElement = document.createElement('div');
         rowElement.classList.add('row');
         row.forEach((cell, j) => {
@@ -17,9 +16,9 @@ export const renderBoard = (board) => {
                 pieceElement.style.left = `${j * 12.5}%`;
                 pieceElement.classList.add('piece');
                 pieceElement.id = `piece-${i}-${j}`;
-                board.appendChild(pieceElement);
+                boardElement.appendChild(pieceElement);
             }
         });
-        board.appendChild(rowElement);
+        boardElement.appendChild(rowElement);
     });
 };

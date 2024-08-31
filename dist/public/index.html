@@ -7,7 +7,23 @@
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <div class="app"></div>
+    <div class="container">
+      <div class="check">Check !</div>
+      <div class="turn">White Playing</div>
+      <div class="app"></div>
+      <div class="controls">
+        <div class="button back disabled">
+          <img id="back" class="icon" src="/assets/back.svg" />
+        </div>
+        <div class="button rotate">
+          <img id="rotate" class="icon" src="/assets/rotate.svg" />
+        </div>
+        <div class="button next disabled">
+          <img id="next" class="icon" src="/assets/next.svg" />
+        </div>
+      </div>
+      <button class="reset">RESET</button>
+    </div>
     <script src="/javascript.js" type="module"></script>
   </body>
 </html>
