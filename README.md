@@ -11,7 +11,7 @@ A simple chess board web application built with Next.js. This app allows two pla
 
 ## Live Demo
 
-You can check out the live version of the app here: [Live Chess Board]([https://github.com/RonnieTz/chess_game.git](https://chess-game-flax.vercel.app/))
+You can check out the live version of the app here: [Live Chess Board](https://chess-game-flax.vercel.app/)
 
 ## Installation
 
